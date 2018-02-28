@@ -11,13 +11,8 @@ function FakeWebdriverInstance() {
   this.args = Array.prototype.slice.call(arguments);
 }
 
-FakeWebdriverInstance.prototype.execute = function() {
-  var args = Array.prototype.slice.call(arguments);
-  var lastArg = args.pop();
-
-  if (typeof lastArg === 'function') {
-    lastArg(null);
-  }
+FakeWebdriverInstance.prototype.executeScript = function() {
+  return Promise.resolve();
 };
 
 
@@ -83,13 +78,13 @@ describe('webdriver.io integration', function() {
     var webdriver = new FakeWebdriverInstance('foo bar');
     var dragMockLib = fs.readFileSync(__dirname + '/../../../dist/drag-mock.js', { encoding: 'utf-8' });
 
-    sinon.spy(webdriver, 'execute');
+    sinon.spy(webdriver, 'executeScript');
 
     it('injects drag-mock code into browser context', function(done) {
       function assertions() {
-        expect(webdriver.execute.callCount).to.equal(1);
+        expect(webdriver.executeScript.callCount).to.equal(1);
 
-        var executeCall = webdriver.execute.getCall(0);
+        var executeCall = webdriver.executeScript.getCall(0);
         expect(executeCall.args[0]).to.eql(dragMockLib);
       }
 

@@ -143,9 +143,11 @@ var webdriverBridge = {
   loadLibrary: function(webdriver, done) {
     var dragMockLib = fs.readFileSync(__dirname + '/../dist/drag-mock.js', { encoding: 'utf-8' });
 
-    webdriver.execute(dragMockLib, function (error) {
-      if (typeof done === 'function') { done(error); }
-    });
+    var scriptPromise = webdriver.executeScript(dragMockLib)
+
+    if (typeof done === 'function') {
+      scriptPromise.then(done, done)
+    }
   }
 
 };
